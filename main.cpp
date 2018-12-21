@@ -25,6 +25,11 @@
 #define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
 #endif
 
+inline void EnableMemLeakCheck()
+{
+	_CrtSetDbgFlag(_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG) | _CRTDBG_LEAK_CHECK_DF);
+}
+
 using namespace std;
 //string转为wstring
 //引用 https://www.cnblogs.com/changxiaoxiao/archive/2013/05/16/3081894.html
@@ -156,16 +161,27 @@ void testChar() {
 
 void testMap() {
 	AVLMap<int, CharString> map;
-	for(int i = 0; i < 5; i ++)
+	for (int i = 0; i < 1; i++) {
 		map[i] = L"s";
-	for (int i = 0; i < 5; i++)
 		map.deleteX(i);
+	}
 }
-
+void testDict() {
+	Searcher sw;
+	sw.initDictionary("./词库.dic");
+	HashDict d(3);
+	CharString s(L"L");
+	d.addCopyOf(&s);
+}
 int main() {
+
+	//_CrtSetBreakAlloc(2407877);
+	//EnableMemLeakCheck();
 	//testAVL();
-	testChar();
-	testMap();
-	//work();
+	//testChar();
+	//testMap();
+	work();
+	//testDict();
+	_CrtDumpMemoryLeaks();
 	return 0;
 }

@@ -9,7 +9,12 @@ int HashDict::innercode(wchar_t ch) {
 
 int HashDict::hash(CharString * str) {
 	wchar_t c1 = str->charAt(0);
-	wchar_t c2 = str->charAt(1);
+	// bug!!
+	wchar_t c2;
+	if (str->size() > 2)
+		c2 = str->charAt(1);
+	else
+		c2 = L' ';
 	int inner1 = innercode(c1);
 	int inner2 = innercode(c2);
 	return ((inner1) * (inner2)) % mod_;//前面乘积应该没超过int 上限 不用删除

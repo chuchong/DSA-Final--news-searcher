@@ -20,6 +20,7 @@ public:
 	virtual void addCopyOf(CharString *str) = 0;
 	virtual void remove(CharString *str) = 0;
 	virtual bool search(CharString *str) = 0;
+	virtual ~Dict() {}
 	//virtual void generateINI(std::wstring url) = 0;
 	//virtual void getINI(std::wstring url) = 0;
 };

@@ -259,7 +259,9 @@ public:
 		c->x = x;
 		AVLCouple<X, Y>* cou = tree.Search(*c);
 		if (cou == nullptr) {
-			return tree.Insert(*c)->y;
+			Y& y = tree.Insert(*c)->y;
+			delete c;
+			return y;
 		}
 		delete c;
 		return cou->y;
@@ -273,6 +275,7 @@ public:
 		AVLCouple<X, Y>* c = new AVLCouple<X, Y>;
 		c->x = x;
 		tree.Remove(*c);
+		delete c;
 	}
 
 };

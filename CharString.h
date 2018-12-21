@@ -10,7 +10,7 @@ class CharString
 	int size_ = 0;
 	wchar_t* charData_;
 	friend class CharString;
-	int* add;//for debug
+	//int* add;//for debug
 public:
 	//²éÕÒ×Ó´®Î»ÖÃ
 	int indexOf(const CharString &, int start);
@@ -49,7 +49,7 @@ public:
 
 	void print();
 	friend std::wostream & operator <<(std::wostream &os, CharString & str);
-	CharString() :charData_(nullptr), size_(0), maxSize_(0) { add = new int; }
+	CharString() :charData_(nullptr), size_(0), maxSize_(0) {/* add = new int;*/ }
 	CharString(const CharString & str);
 	CharString(const std::wstring &);
 	CharString(const wchar_t[]);

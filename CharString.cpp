@@ -22,7 +22,7 @@ CharString::CharString(const std::wstring & str)
 
 CharString::CharString(const CharString & str)
 {
-	add = new int;
+	//add = new int;
 	if (str.size() == 0) {
 		maxSize_ = size_ = 0;
 		charData_ = nullptr;
@@ -67,8 +67,8 @@ CharString::~CharString()
 		delete[] charData_;
 
 
-	std::cout << add;
-	delete add;
+	//std::cout << add;
+	//delete add;
 }
 
 int CharString::indexOf(const CharString & son_str, int start)

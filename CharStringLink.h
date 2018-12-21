@@ -16,6 +16,7 @@ public:
 	virtual const Iterator & operator++ (int ) = 0;
 	virtual CharString* operator*() = 0;
 	virtual bool operator==(Iterator&) = 0;
+	virtual ~Iterator() {}
 };
 class CharStringCollection {
 public:
@@ -25,6 +26,7 @@ public:
 	virtual bool isEmpty() = 0;
 	virtual Iterator * begin() = 0;
 	virtual Iterator * end() = 0;
+	virtual ~CharStringCollection() {}
 };
 //------------------------下面为双向链表实现
 struct ListNode {
@@ -64,6 +66,7 @@ public:
 	ListIterator(ListNode * n) :node(n) {
 
 	}
+	virtual ~ListIterator() {}
 };
 
 class CharStringLink : public CharStringCollection {
@@ -88,6 +91,6 @@ public:
 	virtual void remove(CharString *str);
 	virtual bool search(CharString *str) override;
 	void output(CharString * place);
-	~CharStringLink();
+	virtual ~CharStringLink();
 };
 
