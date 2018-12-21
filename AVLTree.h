@@ -12,7 +12,7 @@ class AVLNode {
 	int balance = 0;
 
 public:
-	AVLNode(T v, AVLNode<T>* l = nullptr, AVLNode<T> *r = nullptr) :value(v), left(l), right(r) {
+	AVLNode(const T & v, AVLNode<T>* l = nullptr, AVLNode<T> *r = nullptr) :value(v), left(l), right(r) {
 
 	}
 };
@@ -21,6 +21,7 @@ template<typename T>
 class AVLTree
 {
 	AVLNode<T>* root;
+	static T* last_insert;
 
 	void Delete(AVLNode<T> *& node) {
 		if (node != nullptr) {
@@ -106,6 +107,7 @@ class AVLTree
 	bool Add(const T& item, AVLNode<T> *&node) {
 		if (node == nullptr) {
 			node = new AVLNode<T>(item);
+			last_insert = &node->value;
 			return true;
 		}
 		else if (item > node->value) {
@@ -119,14 +121,14 @@ class AVLTree
 		return false;
 	}
 
-	T Min(AVLNode<T> *node) {
+	T & Min(AVLNode<T> *node) {
 		AVLNode<T> * n = node;
 		while (n->left != nullptr)
 			n = n->left;
 		return n->value;
 	}
 
-	T Max(AVLNode<T> *node) {
+	T & Max(AVLNode<T> *node) {
 		AVLNode<T> * n = node;
 		while (n->right != nullptr)
 			n = n->right;
@@ -151,7 +153,7 @@ class AVLTree
 			}
 			else if (node->left != nullptr && node->right != nullptr) {
 				AVLNode<T>* curr_node = node;
-				T min_v = Min(node->right);
+				T& min_v = Min(node->right);
 
 				bool isHChanged = Remove(min_v, node);
 				curr_node->value = min_v;
@@ -184,7 +186,7 @@ public:
 		Delete(root);
 	}
 
-	T* Search(T item) {
+	T* Search(const T & item) {
 		AVLNode<T> * node = root;
 
 		while (node != nullptr) {
@@ -198,15 +200,20 @@ public:
 
 		return nullptr;
 	}
-
-	void Insert(T item) {
+	
+	//insert不能返回加进去的点...有点遗憾
+	T * Insert(const T & item) {
 		Add(item, root);
+		return last_insert;
 	}
 
-	void Remove(T item) {
+	void Remove(const T & item) {
 		Remove(item, root);
 	}
 };
+
+template<typename T>
+T* AVLTree<T>::last_insert = nullptr;
 
 template<typename X, typename Y> class AVLMap;
 template<typename X, typename Y> class AVLCouple;
@@ -216,10 +223,56 @@ class AVLCouple {
 	friend class AVLMap<X,Y>;
 	X x;
 	Y y;
+
+public:
+	~AVLCouple() {
+		//delete y;
+	}
+
+	AVLCouple(const AVLCouple& o) {
+		y = o.y;
+		x = o.x;
+	}
+
+	AVLCouple() {
+	}
+
+	bool operator < (const AVLCouple<X, Y> & o) const{
+		return x < o.x;
+	}
+
+	bool operator > (const AVLCouple<X, Y> & o) const{
+		return x > o.x;
+	}
+
+	bool operator == (const AVLCouple<X, Y> & o) const{
+		return x == o.x;
+	}
 };
 
 template<typename X, typename Y>
 class AVLMap {
 	AVLTree<AVLCouple<X, Y>> tree;
+public:
+	Y& operator[](const X & x) {
+		AVLCouple<X, Y>* c = new AVLCouple<X, Y>;
+		c->x = x;
+		AVLCouple<X, Y>* cou = tree.Search(*c);
+		if (cou == nullptr) {
+			return tree.Insert(*c)->y;
+		}
+		delete c;
+		return cou->y;
+	}
+
+	//Y& getValue(const X & x) {
+	//	return *this->operator[](x);
+	//}
+
+	void deleteX(const X & x) {
+		AVLCouple<X, Y>* c = new AVLCouple<X, Y>;
+		c->x = x;
+		tree.Remove(*c);
+	}
 
 };

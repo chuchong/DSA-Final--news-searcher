@@ -10,6 +10,7 @@ class CharString
 	int size_ = 0;
 	wchar_t* charData_;
 	friend class CharString;
+	int* add;//for debug
 public:
 	//查找子串位置
 	int indexOf(const CharString &, int start);
@@ -19,8 +20,7 @@ public:
 	void concat(const CharString & str);
 	//赋值
 	void operator = (const CharString & str);
-	void operator = (const std::wstring & str);
-	void operator = (const wchar_t str[]) { this->operator=(std::wstring(str)); }
+	void operator = (const std::wstring & str);	void operator = (const wchar_t str[]) { this->operator=(std::wstring(str)); }
 	//长度
 	int size() const { return size_; }
 	//resize 更改最大数组大小
@@ -49,7 +49,7 @@ public:
 
 	void print();
 	friend std::wostream & operator <<(std::wostream &os, CharString & str);
-	//CharString():charData_(NULL),size_(0),maxSize_(0){}
+	CharString() :charData_(nullptr), size_(0), maxSize_(0) { add = new int; }
 	CharString(const CharString & str);
 	CharString(const std::wstring &);
 	CharString(const wchar_t[]);

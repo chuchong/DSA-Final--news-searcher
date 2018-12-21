@@ -154,9 +154,18 @@ void testChar() {
 	cout << (a < b) << (a == b) << (a > b) << endl;
 }
 
+void testMap() {
+	AVLMap<int, CharString> map;
+	for(int i = 0; i < 5; i ++)
+		map[i] = L"s";
+	for (int i = 0; i < 5; i++)
+		map.deleteX(i);
+}
+
 int main() {
 	//testAVL();
 	testChar();
+	testMap();
 	//work();
 	return 0;
 }

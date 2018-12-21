@@ -4,6 +4,12 @@
 
 CharString::CharString(const std::wstring & str)
 {
+	//if (str.size() == 0) {
+	//	maxSize_ = size_ = 0;
+	//	charData_ = nullptr;
+	//	return;
+	//}
+
 	int len = str.size();
 	size_ = len;
 	maxSize_ = len;//假如concat操作频繁,可能要给maxSize扩容
@@ -16,6 +22,13 @@ CharString::CharString(const std::wstring & str)
 
 CharString::CharString(const CharString & str)
 {
+	add = new int;
+	if (str.size() == 0) {
+		maxSize_ = size_ = 0;
+		charData_ = nullptr;
+		return;
+	}
+
 	size_ = str.size();
 	maxSize_ = size_;
 
@@ -33,6 +46,12 @@ CharString::CharString(const wchar_t str[]):CharString((std::wstring)(str))
 
 CharString::CharString(CharString * p_str)
 {
+	if (p_str->size() == 0) {
+		maxSize_ = size_ = 0;
+		charData_ = nullptr;
+		return;
+	}
+
 	maxSize_ = p_str->maxSize_;
 	size_ = p_str->size_;
 	charData_ = new wchar_t[maxSize_];
@@ -46,6 +65,10 @@ CharString::~CharString()
 {
 	if(charData_ != NULL)
 		delete[] charData_;
+
+
+	std::cout << add;
+	delete add;
 }
 
 int CharString::indexOf(const CharString & son_str, int start)
@@ -140,6 +163,12 @@ void CharString::concat(const CharString & str)
 
 void CharString::operator=(const CharString & str)
 {
+	if (str.size() == 0) {
+		maxSize_ = size_ = 0;
+		charData_ = nullptr;
+		return;
+	}
+
 	size_ = str.size();
 	maxSize_ = size_;
 
@@ -153,6 +182,12 @@ void CharString::operator=(const CharString & str)
 
 void CharString::operator=(const std::wstring & str)
 {
+	if (str.size() == 0) {
+		maxSize_ = size_ = 0;
+		charData_ = nullptr;
+		return;
+	}
+
 	size_ = str.size();
 	maxSize_ = size_;
 
@@ -269,7 +304,7 @@ void CharString::pop_back()
 
 std::wstring CharString::to_wstring()
 {
-	std::wstring str;
+	std::wstring str(L"");
 	for (int i = 0; i < size_; i++)
 		str.push_back(charData_[i]);
 	return str;
