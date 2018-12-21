@@ -1,8 +1,5 @@
 #include "CharStringLink.h"
 
-
-
-
 inline void CharStringLink::print() {
 	ListNode * node = head_;
 	while (node != nullptr) {

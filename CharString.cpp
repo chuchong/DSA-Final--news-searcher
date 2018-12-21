@@ -239,8 +239,15 @@ wchar_t & CharString::charAt(int index)
 	return charData_[index];// TODO: 在此处插入 return 语句
 }
 
-bool CharString::equal(const CharString * rstr)
+bool CharString::equal(const CharString * rstr) const
 {
+	if (size_ == 0) {
+		if (rstr->size() == 0)
+			return true;
+		else
+			return false;
+	}
+
 	if(rstr->size() != size_)
 		return false;
 	else {
@@ -252,8 +259,15 @@ bool CharString::equal(const CharString * rstr)
 	}
 }
 
-bool CharString::operator<(const CharString & str)
+bool CharString::operator<(const CharString & str) const
 {
+	if (size_ == 0) {
+		if (str.size() == 0)
+			return false;
+		else
+			return true;
+	}
+
 	int i = 0;
 	int s2 = str.size();
 	while (i < size_ && i < s2 && charData_[i] == str[i])
@@ -270,8 +284,12 @@ bool CharString::operator<(const CharString & str)
 		return true;
 }
 
-bool CharString::operator>(const CharString & str)
+bool CharString::operator >(const CharString & str) const
 {
+	if (size_ == 0) {
+		return false;
+	}
+
 	int i = 0;
 	int s2 = str.size();
 	while (i < size_ && i < s2 && charData_[i] == str[i])

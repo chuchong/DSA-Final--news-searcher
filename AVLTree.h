@@ -20,7 +20,7 @@ public:
 template<typename T>
 class AVLTree
 {
-	AVLNode<T>* root;
+	AVLNode<T>* root = nullptr;
 	static T* last_insert;
 
 	void Delete(AVLNode<T> *& node) {
@@ -276,6 +276,15 @@ public:
 		c->x = x;
 		tree.Remove(*c);
 		delete c;
+	}
+
+	bool find(const X & x) {
+		AVLCouple<X, Y>* c = new AVLCouple<X, Y>;
+		c->x = x;
+		bool ans = (tree.Search(*c) != nullptr);
+		delete c;
+
+		return ans;
 	}
 
 };

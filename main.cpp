@@ -20,6 +20,7 @@
 #include <vector>//只用在main中提取同级目录下所有文件
 #include <crtdbg.h>
 #include "AVLTree.h"
+#include "Doc.h"
 
 #ifdef _DEBUG
 #define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
@@ -173,6 +174,16 @@ void testDict() {
 	CharString s(L"L");
 	d.addCopyOf(&s);
 }
+
+void testDoc() {
+	std::vector<Doc*> vd;
+	for (int i = 0; i < 781; i++) {
+		Doc* d = new Doc(i);
+		vd.push_back(d);
+	}
+
+	return;
+}
 int main() {
 
 	//_CrtSetBreakAlloc(2407877);
@@ -180,8 +191,10 @@ int main() {
 	//testAVL();
 	//testChar();
 	//testMap();
-	work();
+	//work();
 	//testDict();
-	_CrtDumpMemoryLeaks();
+	//_CrtDumpMemoryLeaks();
+	//
+	testDoc();
 	return 0;
 }

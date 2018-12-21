@@ -31,13 +31,13 @@ public:
 	const wchar_t & charAt(int index) const;
 	wchar_t & charAt(int index);
 	//±È½Ïº¯Êý
-	bool equal (const CharString * rstr);
-	bool operator==(const CharString & str) {
+	bool equal (const CharString * rstr) const;
+	bool operator==(const CharString & str) const{
 		return this->equal(&str);
 	}
 	// git 
-	bool operator <(const CharString & str);
-	bool operator >(const CharString & str);
+	bool operator <(const CharString & str) const;
+	bool operator >(const CharString & str) const;
 
 
 	void push_back(wchar_t);
