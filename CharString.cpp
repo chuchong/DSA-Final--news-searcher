@@ -219,13 +219,38 @@ bool CharString::equal(const CharString * rstr)
 
 bool CharString::operator<(const CharString & str)
 {
-
-	return false;
+	int i = 0;
+	int s2 = str.size();
+	while (i < size_ && i < s2 && charData_[i] == str[i])
+		i++;
+	if (i < size_ && i < s2) {
+		if (charData_[i] < str[i])
+			return true;
+		else
+			return false;
+	}
+	else if (i >= s2)
+		return false;
+	else
+		return true;
 }
 
 bool CharString::operator>(const CharString & str)
 {
-	return false;
+	int i = 0;
+	int s2 = str.size();
+	while (i < size_ && i < s2 && charData_[i] == str[i])
+		i++;
+	if (i < size_ && i < s2) {
+		if (charData_[i] > str[i])
+			return true;
+		else
+			return false;
+	}
+	else if (i >= size_)
+		return false;
+	else
+		return true;
 }
 
 void CharString::push_back(wchar_t ch)

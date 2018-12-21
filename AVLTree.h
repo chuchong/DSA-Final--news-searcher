@@ -213,11 +213,9 @@ template<typename X, typename Y> class AVLCouple;
 
 template<typename X, typename Y>
 class AVLCouple {
-	friend class AVLMap<T>;
+	friend class AVLMap<X,Y>;
 	X x;
 	Y y;
-
-	
 };
 
 template<typename X, typename Y>

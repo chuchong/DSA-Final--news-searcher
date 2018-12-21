@@ -20,6 +20,7 @@ public:
 	//赋值
 	void operator = (const CharString & str);
 	void operator = (const std::wstring & str);
+	void operator = (const wchar_t str[]) { this->operator=(std::wstring(str)); }
 	//长度
 	int size() const { return size_; }
 	//resize 更改最大数组大小

@@ -142,8 +142,21 @@ void testAVL() {
 
 }
 
+void testChar() {
+	CharString a(L"123");
+	CharString b(L"123");
+	cout << (a < b) << (a == b) << (a > b) << endl;
+	a = L"1234";
+	cout << (a < b) << (a == b) << (a > b) << endl;
+	a = L"12";
+	cout << (a < b) << (a == b) << (a > b) << endl;
+	a = L"234";
+	cout << (a < b) << (a == b) << (a > b) << endl;
+}
+
 int main() {
-	testAVL();
+	//testAVL();
+	testChar();
 	//work();
 	return 0;
 }
