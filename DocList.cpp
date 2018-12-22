@@ -43,7 +43,7 @@ void DocList::Add(int id, int cnt)
 	return;
 }
 
-int DocList::Search(int id)
+int DocList::Search(int id)const
 {
 	DocNode*node = head;
 	while (node != nullptr) {
@@ -108,8 +108,8 @@ void DocList::qSort(DocNode * left, DocNode * right)
 
 DocNode * DocList::Partion(DocNode * left, DocNode * right)
 {
-	int cnt = left->cnt;
-	int id = left->id;
+	int cnt = right->cnt;
+	int id = right->id;
 
 
 	DocNode *i = left->prior;
@@ -145,10 +145,5 @@ DocList::DocList()
 
 DocList::~DocList()
 {
-	DocNode * p = head;
-	while (p != nullptr) {
-		DocNode * q = p;
-		p = p->next;
-		delete q;
-	}
+	clear();
 }

@@ -184,9 +184,11 @@ void testDoc() {
 	//	vd.push_back(d);
 	//}
 
+	CharStringLink list;
+	list.add(L"美元");
+	list.add(L"经济");
 	InvertDoc d;
-	d.printQuery(L"美元");
-	d.printQuery(L"经济");
+	d.printQuery(list, 780);
 	return;
 }
 
