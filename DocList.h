@@ -1,6 +1,8 @@
 #pragma once
 #include"Doc.h"
 #include <iostream>
+#include <fstream>
+#include <ostream>
 
 struct DocNode {
 	int id;
@@ -38,13 +40,12 @@ public:
 	void qSort();
 
 	void PushBack(int id, int cnt);
-	void print() {
+	void print(std::wofstream & os) {
 		auto i = head;
 		while (i != nullptr) {
-			std::cout << "(" << i->id << "," << i->cnt << ")" << " ";
+			os << "(" << i->id << "," << i->cnt << ")" << " ";
 			i = i->next;
 		}
-		std::cout << std::endl;
 	}
 
 	DocList(const DocList & li) {

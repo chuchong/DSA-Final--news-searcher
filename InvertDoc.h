@@ -4,6 +4,9 @@
 #include "AVLTree.h"
 #include "CharString.h"
 #include "CharStringLink.h"
+#include <iostream>
+#include <fstream>
+#include <ostream>
 class InvertDoc
 {
 	AVLMap<CharString, DocList> map;
@@ -12,9 +15,9 @@ public:
 	//	return map[s].Search();
 	//}
 
-	void printQuery(const CharString & str) {
+	void printQuery(const CharString & str, std::wofstream & os) {
 		auto a = map[str];
-		a.print();
+		a.print(os);
 	}
 
 	//WARNING MAGICNUMBER
@@ -29,7 +32,7 @@ public:
 		d3.qSort();
 	}
 
-	void printQuery(CharStringLink & list, int maxsize) {
+	void printQuery(CharStringLink & list, int maxsize, std::wofstream & os) {
 		Iterator * a = list.begin();
 		Iterator * b = list.end();
 		auto iter = a;
@@ -41,7 +44,7 @@ public:
 			buf = buf2;
 			(*iter)++;
 		}
-		buf.print();
+		buf.print(os);
 		delete a;
 		delete b;
 

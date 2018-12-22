@@ -184,12 +184,42 @@ void testDoc() {
 	//	vd.push_back(d);
 	//}
 
-	CharStringLink list;
-	list.add(L"美元");
-	list.add(L"经济");
-	InvertDoc d;
-	d.printQuery(list, 780);
-	return;
+	//CharStringLink list;
+	//list.add(L"美元");
+	//list.add(L"经济");
+	//InvertDoc d;
+	//d.printQuery(list, 780);
+	//return;
+}
+
+void retrieve() {
+	Devider devider;
+	Searcher searcher;
+	searcher.initDictionary("./词库.dic");
+	InvertDoc invertDoc;
+
+	std::locale loc("chs");//windows下ok
+
+	std::wifstream in;
+	in.imbue(loc);
+	std::string url = "query1.txt";
+	in.open(url);
+
+	std::wofstream os;
+	os.imbue(loc);
+	std::string orl = "result1.txt";
+	os.open(orl);
+
+	std::wstring str;
+	while (getline(in, str)) {
+		CharString s(str);
+		CharStringLink link;
+		devider.devide(&s, &searcher, &link);
+
+		if(!link.isEmpty())
+		invertDoc.printQuery(link, 780, os);
+		os << std::endl;
+	}
 }
 
 int main() {
@@ -203,6 +233,7 @@ int main() {
 	//testDict();
 	//_CrtDumpMemoryLeaks();
 	//
-	testDoc();
+	retrieve();
+	//testDoc();
 	return 0;
 }
