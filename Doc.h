@@ -10,6 +10,7 @@
 #include <codecvt>
 class Doc
 {
+public:
 	int id;
 	AVLMap<CharString, int> cnt;
 	CharStringLink list;

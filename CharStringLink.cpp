@@ -83,12 +83,17 @@ void CharStringLink::remove(CharString * str) {
 		q = p->next_;
 		if (p->str_->equal(str)) {// 第一个就是
 			head_ = q;
+			q->prior_ = nullptr;
 			delete p;
 			return;
 		}
 		while (q != nullptr) {//第一个不是
 			if (q->str_->equal(str)) {//q位置是
 				p->next_ = q->next_;
+				if (p->next_)
+					p->next_->prior_ = p;
+				else
+					last_ = p;
 				delete q;
 				return;
 			}

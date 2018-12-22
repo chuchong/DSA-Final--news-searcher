@@ -21,6 +21,8 @@
 #include <crtdbg.h>
 #include "AVLTree.h"
 #include "Doc.h"
+#include "DocList.h"
+#include "InvertDoc.h"
 
 #ifdef _DEBUG
 #define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
@@ -176,14 +178,18 @@ void testDict() {
 }
 
 void testDoc() {
-	std::vector<Doc*> vd;
-	for (int i = 0; i < 781; i++) {
-		Doc* d = new Doc(i);
-		vd.push_back(d);
-	}
+	//std::vector<Doc*> vd;
+	//for (int i = 0; i < 781; i++) {
+	//	Doc* d = new Doc(i);
+	//	vd.push_back(d);
+	//}
 
+	InvertDoc d;
+	d.printQuery(L"美元");
+	d.printQuery(L"经济");
 	return;
 }
+
 int main() {
 
 	//_CrtSetBreakAlloc(2407877);

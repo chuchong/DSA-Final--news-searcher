@@ -85,6 +85,7 @@ public:
 	virtual bool isEmpty() override {
 		return head_ == nullptr;
 	}
+
 	void add(const std::wstring & str);
 	void add(CharString * str);
 	//用来删除某个同名字符串的第一个匹配项
