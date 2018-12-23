@@ -8,7 +8,7 @@ class CharString
 {
 	int maxSize_;
 	int size_ = 0;
-	wchar_t* charData_;
+	wchar_t* charData_ = nullptr;
 	friend class CharString;
 	//int* add;//for debug
 public:

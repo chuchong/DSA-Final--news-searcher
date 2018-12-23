@@ -32,7 +32,7 @@ CharString::CharString(const CharString & str)
 	size_ = str.size();
 	maxSize_ = size_;
 
-	if (charData_ != NULL)
+	if (charData_ != nullptr)
 		delete[] charData_;
 
 	charData_ = new wchar_t[maxSize_];

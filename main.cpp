@@ -231,7 +231,7 @@ void retrieve() {
 		os << endl;
 
 		wait_cnt++;
-		if (wait_cnt == 200) {
+		if (wait_cnt == 100) {
 			cout << ".";
 			wait_cnt = 0;
 		}
@@ -331,6 +331,6 @@ int main() {
 	retrieve();
 	//testDoc();
 	//createDataset();
-	_CrtDumpMemoryLeaks();
+	//_CrtDumpMemoryLeaks();
 	return 0;
 }
