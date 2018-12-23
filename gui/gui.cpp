@@ -41,6 +41,8 @@ gui::gui(QWidget *parent)
 	connect(this->ui.searchBtn,&QPushButton::clicked, this, &gui::search);
 	connect(this->ui.searchPrev, &QPushButton::clicked, this, &gui::prevSearch);
 	connect(this->ui.searchNext, &QPushButton::clicked, this, &gui::nextSearch);
+	connect(this->ui.ResultList, &QListWidget::itemDoubleClicked, this, &gui::searchResult);
+	connect(this->ui.promoteList, &QListWidget::itemDoubleClicked, this, &gui::promoteResult);
 
 }
 
@@ -126,6 +128,58 @@ void gui::prevSearch()
 	showSearchResult(seachPage);
 }
 
+void gui::openNewsBox(int id)
+{
+	NewsDialog* box = new NewsDialog(id, this);
+	box->show();
+}
+
+void gui::searchResult(QListWidgetItem *)
+{
+	int row = ui.ResultList->currentRow();
+
+
+	int cnt = 0;
+	auto iter = bufSearchList->getHead();
+	while (iter != nullptr && cnt < bufSearchSize && cnt < row + seachPage * PAGESIZE) {
+		iter = iter->next;
+		cnt++;
+	}
+
+	int id = iter->id;
+	openNewsBox(id);
+}
+
+void gui::promoteResult(QListWidgetItem *){
+	int row = ui.promoteList->currentRow();
+
+
+	auto iter = bufPromoteList->getHead();
+	int id = iter->id;
+	bool flag = 1;
+	int cnt = 0;
+	while (iter != nullptr && cnt < bufPromoteSize && cnt < row) {
+		int id = iter->id;
+		bool flag = 1;
+		auto searchIter = bufSearchList->getHead();
+		int searchCnt = 0;
+		while (searchIter != nullptr && searchCnt < PAGESIZE) {
+			if (searchIter->id == id)
+				flag = 0;
+
+			searchCnt++;
+			searchIter = searchIter->next;
+		}
+
+		if (flag == 1) {
+			cnt++;
+		}
+		iter = iter->next;
+	}
+	id = iter->id;
+	openNewsBox(id);
+}
+
 //void gui::nextPromote()
 //{
 //	if (promotePage + 1 > bufSearchSize / PAGESIZE)
@@ -181,4 +235,6 @@ void gui::search()
 
 	showSearchResult(seachPage);
 	showPromoteResult(promotePage);
+
+	
 }

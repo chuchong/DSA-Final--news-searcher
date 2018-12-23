@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>NewsBox</string>
   </property>
-  <widget class="QTextBrowser" name="textBrowser_4">
+  <widget class="QTextBrowser" name="content">
    <property name="geometry">
     <rect>
      <x>290</x>
@@ -23,7 +23,7 @@
     </rect>
    </property>
   </widget>
-  <widget class="QListWidget" name="listWidget">
+  <widget class="QListWidget" name="promoteList">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -98,7 +98,7 @@
     <string>正文</string>
    </property>
   </widget>
-  <widget class="QTextBrowser" name="textBrowser">
+  <widget class="QTextBrowser" name="title">
    <property name="geometry">
     <rect>
      <x>360</x>
@@ -119,12 +119,25 @@
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QTextBrowser" name="textBrowser_2"/>
+     <widget class="QTextBrowser" name="source"/>
     </item>
     <item>
-     <widget class="QTextBrowser" name="textBrowser_3"/>
+     <widget class="QTextBrowser" name="time"/>
     </item>
    </layout>
+  </widget>
+  <widget class="QLabel" name="label_5">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>72</width>
+     <height>15</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>推荐</string>
+   </property>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>

@@ -11,6 +11,7 @@
 #include <qtextcodec.h>
 #include <qbytearray.h>
 #include<codecvt>
+#include "NewsDialog.h"
 
 class gui : public QMainWindow
 {
@@ -59,6 +60,10 @@ public slots:
 	void nextSearch();
 	void prevSearch();
 
+
+	void openNewsBox(int id);
+	void searchResult(QListWidgetItem *);
+	void promoteResult(QListWidgetItem *);
 	//void nextPromote();
 	//void prevPromote();
 

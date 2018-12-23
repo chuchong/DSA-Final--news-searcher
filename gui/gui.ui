@@ -160,8 +160,26 @@
  <resources>
   <include location="gui.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>ResultList</sender>
+   <signal>itemDoubleClicked(QListWidgetItem*)</signal>
+   <receiver>guiClass</receiver>
+   <slot>searchResut(QListWidgetItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>323</x>
+     <y>269</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>382</x>
+     <y>159</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
  <slots>
   <slot>search()</slot>
+  <slot>searchResut(QListWidgetItem*)</slot>
  </slots>
 </ui>
