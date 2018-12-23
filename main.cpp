@@ -197,6 +197,7 @@ void retrieve() {
 	Searcher searcher;
 	searcher.initDictionary("./´Ê¿â.dic");
 	InvertDoc invertDoc;
+	invertDoc.createList(devider, searcher);
 
 	std::locale loc("chs");//windowsÏÂok
 
@@ -272,9 +273,9 @@ int main() {
 	//testDict();
 
 	//
-	//retrieve();
+	retrieve();
 	//testDoc();
-	createDataset();
-	_CrtDumpMemoryLeaks();
+	//createDataset();
+	//_CrtDumpMemoryLeaks();
 	return 0;
 }

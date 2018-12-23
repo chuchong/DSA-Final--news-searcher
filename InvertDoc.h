@@ -9,6 +9,7 @@
 #include <ostream>
 class InvertDoc
 {
+	CharString titles[781];
 	AVLMap<CharString, DocList> map;
 public:
 	//int Find(CharString & s) {
@@ -48,6 +49,26 @@ public:
 		delete a;
 		delete b;
 
+	}
+
+	void createList(Devider & devider, Searcher& searcher) {
+		for (int i = 0; i <= 780; i++) {
+			Doc d(i);
+			d.parse(devider, searcher);
+			Iterator* iter = d.list.begin();
+			Iterator* begin = iter;
+			Iterator* end = d.list.end();
+			while (!(*iter == *end)) {
+				CharString *str = *(*iter);
+				map[*str].Add(i, d.cnt[*str]);
+				++(*iter);
+			}
+
+			delete begin;
+			delete end;
+
+			titles[i] = d.title;
+		}
 	}
 	InvertDoc();
 	~InvertDoc();
