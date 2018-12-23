@@ -16,7 +16,7 @@
 class gui : public QMainWindow
 {
 	Q_OBJECT
-
+	//以下是全局变量，不需要delete
 	Searcher * searcher;
 	Devider * devider;
 	InvertDoc * invertDoc;

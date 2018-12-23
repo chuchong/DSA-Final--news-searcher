@@ -130,7 +130,32 @@ void gui::prevSearch()
 
 void gui::openNewsBox(int id)
 {
-	NewsDialog* box = new NewsDialog(id, this);
+	QString title = WString2Qstring(invertDoc->getTitle(id).to_wstring());
+	CharString str(QString2WString(title));
+	Promoter promoter(str, *devider, *searcher);
+	DocWeightList wlist;
+	promoter.PromoteNews(*invertDoc, 781, wlist);
+	DocNode * promote_iter = wlist.getHead();
+	
+	int cnt = 0;
+	QVector<int>ids;
+	QVector<QString> titles;
+	while (promote_iter != nullptr &&cnt < 10) {
+		
+		if (promote_iter->id != id) {
+			ids.push_back(promote_iter->id);
+			CharString tit = invertDoc->getTitle(promote_iter->id);
+			QString qtit = WString2Qstring(tit.to_wstring());
+			titles.push_back(qtit);
+			cnt++;
+		}
+		else
+			cnt = cnt;
+		promote_iter = promote_iter->next;
+	}
+
+	NewsDialog* box = new NewsDialog(id, titles, ids, this);
+	connect(box, &NewsDialog::openPromote, this, &gui::openNewsBox);
 	box->show();
 }
 
