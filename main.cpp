@@ -222,18 +222,59 @@ void retrieve() {
 	}
 }
 
+void createDataset() {
+	std::vector<string> files;
+
+	string filePath("dataset/");
+	////获取该路径下的所有文件  
+	getFiles(filePath, files);
+
+	Devider d;
+	Searcher se;
+	se.initDictionary("./词库.dic");
+	std::wstring_convert<std::codecvt_utf8<wchar_t>> conv;
+	std::locale loc("chs");//windows下ok
+
+	for (string file : files) {
+		std::ifstream in;
+		in.imbue(loc);
+		in.open(file);
+
+		std::wofstream os;
+		os.imbue(loc);
+		os.open(file.substr(9,11)+"data");
+
+		std::string str;
+		std::wstring wstr;
+		wstr = conv.from_bytes(str);
+
+		while (getline(in, str)) {
+			wstr = conv.from_bytes(str);
+			CharString s(wstr);
+			
+			CharStringLink link;
+			d.devide(&s, &se, &link);
+			link.print(os);
+			os << endl;
+		}
+	}
+
+}
+
 int main() {
 
-	//_CrtSetBreakAlloc(2407877);
+	//_CrtSetBreakAlloc(2804683);
 	//EnableMemLeakCheck();
 	//testAVL();
 	//testChar();
 	//testMap();
 	//work();
 	//testDict();
-	//_CrtDumpMemoryLeaks();
+
 	//
-	retrieve();
+	//retrieve();
 	//testDoc();
+	createDataset();
+	_CrtDumpMemoryLeaks();
 	return 0;
 }

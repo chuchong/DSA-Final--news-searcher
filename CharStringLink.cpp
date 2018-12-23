@@ -1,13 +1,6 @@
 #include "CharStringLink.h"
 
-inline void CharStringLink::print() {
-	ListNode * node = head_;
-	while (node != nullptr) {
-		node->str_->print();
-		std::cout << " ";
-		node = node->next_;
-	}
-}
+
 
 //delete iterator 指向的 node,注意:!!iter会失效 
  void CharStringLink::remove(ListIterator * iter) {

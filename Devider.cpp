@@ -24,6 +24,7 @@ void Devider::devide(CharString * str, Searcher * searcher, CharStringLink * lin
 				if (sub->size() > 1)
 					link->add(sub);
 				left = left + sub->size();
+				delete sub;
 			}
 		} while (left < right);
 		index = right;

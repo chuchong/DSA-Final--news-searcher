@@ -73,7 +73,14 @@ class CharStringLink : public CharStringCollection {
 	ListNode * head_ = nullptr;
 	ListNode * last_ = nullptr;
 public:
-	void print();
+	inline void print(std::wofstream &os){
+		ListNode * node = head_;
+		while (node != nullptr) {
+			os << *node->str_;
+			os << " ";
+			node = node->next_;
+		}
+	}
 	//delete iterator 指向的 node,注意:!!iter会失效 
 	virtual void remove(ListIterator * iter);
 	virtual Iterator * begin() {
