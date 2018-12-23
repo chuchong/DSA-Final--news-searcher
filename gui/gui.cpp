@@ -35,8 +35,8 @@ gui::gui(QWidget *parent)
 	devider = new Devider();
 	invertDoc = new InvertDoc();
 	invertDoc->createList(*devider, *searcher);
-	bufSearchList = new DocList();
-	bufPromoteList = new DocList();
+	bufSearchList = new DocWeightList();
+	bufPromoteList = new DocWeightList();
 
 	connect(this->ui.searchBtn,&QPushButton::clicked, this, &gui::search);
 	connect(this->ui.searchPrev, &QPushButton::clicked, this, &gui::prevSearch);

@@ -141,10 +141,14 @@ public:
 		delete[] times;
 	}
 
-	void PromoteNews(InvertDoc &indoc, int id_cnt, DocList&list) {
+	//promoter 更看重weight而不是cnt
+	void PromoteNews(InvertDoc &indoc, int id_cnt, DocWeightList&list) {
 		double* weights = new double[id_cnt];
-		for (int i = 0; i < id_cnt; i++)
+		int* match_cnts = new int[id_cnt];
+		for (int i = 0; i < id_cnt; i++) {
 			weights[i] = 0;
+			match_cnts[i] = 0;
+		}
 
 		Iterator * a = buflink.begin();
 		Iterator * b = buflink.end();
@@ -162,8 +166,11 @@ public:
 					int id = doc->id;
 					int doc_wcnt = doc->cnt;
 
-					if (indoc.getTotalWords(id) != 0)
-						weights[id] += (doc_wcnt * wcnt * 20 / (double)(indoc.getTotalWords(id)));
+					if (indoc.getTotalWords(id) != 0) {
+						double ttl = indoc.getTotalWords(id) > 100 ? indoc.getTotalWords(id) : 100;
+						weights[id] += (doc_wcnt * wcnt * 100 / ttl);
+						match_cnts[id] ++;
+					}
 					doc = doc->next;
 				}
 			}
@@ -176,8 +183,11 @@ public:
 					int id = title_doc->id;
 					int doc_wcnt = title_doc->cnt;
 
-					if (indoc.getTotalWords(id) != 0)
-						weights[id] += (doc_wcnt * wcnt);
+					if (indoc.getTotalWords(id) != 0) {
+						weights[id] += (doc_wcnt * wcnt*2);//标题的更重要些
+						if (match_cnts[id] == 0)
+							match_cnts[id] ++;
+					}
 					title_doc = title_doc->next;
 				}
 			}
@@ -190,15 +200,16 @@ public:
 
 		for (int i = 0; i < id_cnt; i++) {
 			if (weights[i] > 0)
-				list.Add(i, weights[i]);
+				list.Add(i, 0, weights[i] * match_cnts[i]);
 		}
 
 		list.qSort();
 		delete[] weights;
+		delete[] match_cnts;
 	}
 
-
-	void SearchNews(InvertDoc &indoc, int id_cnt, DocList&list) {
+	//search更看重匹配了多少词
+	void SearchNews(InvertDoc &indoc, int id_cnt, DocWeightList&list) {
 		double* weights = new double[id_cnt];
 		int* match_cnts = new int[id_cnt];
 		for (int i = 0; i < id_cnt; i++) {
@@ -240,7 +251,8 @@ public:
 
 					if (indoc.getTotalWords(id) != 0) {
 						weights[id] += (doc_wcnt * wcnt);
-						match_cnts[id] ++;
+						if(match_cnts[id] == 0)
+							match_cnts[id] ++;
 					}
 					title_doc = title_doc->next;
 				}
@@ -254,7 +266,7 @@ public:
 
 		for (int i = 0; i < id_cnt; i++) {
 			if (weights[i] > 0)
-				list.Add(i, match_cnts[i] * 10 + weights[i]);
+				list.Add(i, match_cnts[i], weights[i]);
 		}
 
 		list.qSort();

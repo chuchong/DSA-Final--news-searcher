@@ -20,26 +20,26 @@ class gui : public QMainWindow
 	Devider * devider;
 	InvertDoc * invertDoc;
 	//search xiangguan
-	DocList *bufSearchList = nullptr;
+	DocWeightList *bufSearchList = nullptr;
 	int bufSearchSize = 0;
 	int seachPage = 0;
 
-	DocList *bufPromoteList = nullptr;
+	DocWeightList *bufPromoteList = nullptr;
 	int bufPromoteSize = 0;
 	const int promotePage = 0;
 
 private:
-	DocList * renewSearchList() {
+	DocWeightList * renewSearchList() {
 		if (bufSearchList != nullptr)
 			delete bufSearchList;
-		bufSearchList = new DocList();
+		bufSearchList = new DocWeightList();
 		return bufSearchList;
 	}
 
-	DocList * renewPromoteList() {
+	DocWeightList * renewPromoteList() {
 		if (bufPromoteList != nullptr)
 			delete bufPromoteList;
-		bufPromoteList = new DocList();
+		bufPromoteList = new DocWeightList();
 		return bufPromoteList;
 	}
 	std::wstring QString2WString(QString str);
