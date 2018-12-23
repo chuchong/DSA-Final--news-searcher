@@ -9,6 +9,7 @@
 #include <qbytearray.h>
 #include<codecvt>
 #define PAGESIZE 10
+#define PROMOTESIZE 10
 
 std::wstring gui::QString2WString(QString str)
 {
@@ -35,6 +36,7 @@ gui::gui(QWidget *parent)
 	invertDoc = new InvertDoc();
 	invertDoc->createList(*devider, *searcher);
 	bufSearchList = new DocList();
+	bufPromoteList = new DocList();
 
 	connect(this->ui.searchBtn,&QPushButton::clicked, this, &gui::search);
 	connect(this->ui.searchPrev, &QPushButton::clicked, this, &gui::prevSearch);
@@ -69,6 +71,45 @@ inline void gui::showSearchResult(int page) {
 	showSearchResult(page * PAGESIZE, page * PAGESIZE + PAGESIZE);
 }
 
+void gui::showPromoteResult(int begin, int end)
+{
+	ui.promoteList->clear();
+	auto iter = bufPromoteList->getHead();
+	int cnt = 0;
+	while (iter != nullptr && cnt < bufPromoteSize && cnt < begin) {
+		iter = iter->next;
+		cnt++;
+	}
+
+	while (iter != nullptr && cnt < bufPromoteSize && cnt < end) {
+		int id = iter->id;
+		bool flag = 1;
+		auto searchIter = bufSearchList->getHead();
+		int searchCnt = 0;
+		while (searchIter != nullptr && searchCnt < PAGESIZE) {
+			if (searchIter->id == id)
+				flag = 0;
+
+			searchCnt++;
+			searchIter = searchIter->next;
+		}
+
+		if (flag == 1) {
+			CharString s = invertDoc->getTitle(id);
+
+			QString qstr = WString2Qstring(s.to_wstring());
+			ui.promoteList->addItem(qstr);
+			cnt++;
+		}
+		iter = iter->next;
+	}
+}
+
+void gui::showPromoteResult(int page)
+{
+	showPromoteResult(page * PROMOTESIZE, page * PROMOTESIZE + PROMOTESIZE);
+}
+
 void gui::nextSearch()
 {
 	if (seachPage + 1 > bufSearchSize / PAGESIZE)
@@ -85,6 +126,22 @@ void gui::prevSearch()
 	showSearchResult(seachPage);
 }
 
+//void gui::nextPromote()
+//{
+//	if (promotePage + 1 > bufSearchSize / PAGESIZE)
+//		return;
+//	promotePage++;
+//	showSearchResult(promotePage);
+//}
+//
+//void gui::prevPromote()
+//{
+//	if (promotePage - 1 < 0)
+//		return;
+//	promotePage--;
+//	showSearchResult(promotePage);
+//}
+
 void gui::search()
 {
 	QString str = ui.SearchEdit->text();
@@ -96,8 +153,9 @@ void gui::search()
 	DocList list;
 	Promoter promoter(s, *devider, *searcher);
 	CharStringLink link;
-	promoter.SearchWordsOr(*invertDoc, 781, *renewSearchList());
-	
+
+
+	promoter.SearchNews(*invertDoc, 781, *renewSearchList());
 	bufSearchSize = 0;
 	seachPage = 0;
 	auto iter = bufSearchList->getHead();
@@ -111,4 +169,16 @@ void gui::search()
 
 	showSearchResult(seachPage);
 	//ÍÆ¼ö
+
+	bufPromoteSize = 0;
+	//promotePage = 0;
+	promoter.PromoteNews(*invertDoc, 781, *renewPromoteList());
+	auto promote_iter = bufPromoteList->getHead();
+	while (promote_iter != nullptr) {
+		bufPromoteSize++;
+		promote_iter = promote_iter->next;
+	}
+
+	showSearchResult(seachPage);
+	showPromoteResult(promotePage);
 }

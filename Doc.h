@@ -17,7 +17,7 @@ public:
 	CharStringLink list;
 	CharStringLink title_list;
 	AVLMap<CharString, int> title_cnt;
-	int total_words = 0;
+	double total_words = 0;
 
 	//文本内容之类的直接读取input，不占用缓存了
 public:

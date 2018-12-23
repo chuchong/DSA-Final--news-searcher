@@ -140,6 +140,130 @@ public:
 		list.qSort();
 		delete[] times;
 	}
+
+	void PromoteNews(InvertDoc &indoc, int id_cnt, DocList&list) {
+		double* weights = new double[id_cnt];
+		for (int i = 0; i < id_cnt; i++)
+			weights[i] = 0;
+
+		Iterator * a = buflink.begin();
+		Iterator * b = buflink.end();
+		auto p_iter = a;
+
+
+		while (!(*p_iter == *b)) {
+			DocList* list = indoc.getDocList(***p_iter);
+
+			int wcnt = cnt[***p_iter];
+
+			if (list != nullptr) {
+				auto doc = list->getHead();
+				while (doc != nullptr) {
+					int id = doc->id;
+					int doc_wcnt = doc->cnt;
+
+					if (indoc.getTotalWords(id) != 0)
+						weights[id] += (doc_wcnt * wcnt * 20 / (double)(indoc.getTotalWords(id)));
+					doc = doc->next;
+				}
+			}
+
+
+			DocList* title_list = indoc.getTitleDocList(***p_iter);
+			if (title_list != nullptr) {
+				auto title_doc = title_list->getHead();
+				while (title_doc != nullptr) {
+					int id = title_doc->id;
+					int doc_wcnt = title_doc->cnt;
+
+					if (indoc.getTotalWords(id) != 0)
+						weights[id] += (doc_wcnt * wcnt);
+					title_doc = title_doc->next;
+				}
+			}
+
+			(*p_iter)++;
+		}
+
+		delete a;
+		delete b;
+
+		for (int i = 0; i < id_cnt; i++) {
+			if (weights[i] > 0)
+				list.Add(i, weights[i]);
+		}
+
+		list.qSort();
+		delete[] weights;
+	}
+
+
+	void SearchNews(InvertDoc &indoc, int id_cnt, DocList&list) {
+		double* weights = new double[id_cnt];
+		int* match_cnts = new int[id_cnt];
+		for (int i = 0; i < id_cnt; i++) {
+			weights[i] = 0;
+			match_cnts[i] = 0;
+		}
+
+		Iterator * a = buflink.begin();
+		Iterator * b = buflink.end();
+		auto p_iter = a;
+
+
+		while (!(*p_iter == *b)) {
+			DocList* list = indoc.getDocList(***p_iter);
+
+			int wcnt = cnt[***p_iter];
+
+			if (list != nullptr) {
+				auto doc = list->getHead();
+				while (doc != nullptr) {
+					int id = doc->id;
+					int doc_wcnt = doc->cnt;
+
+					if (indoc.getTotalWords(id) != 0) {
+						weights[id] += (doc_wcnt * wcnt / (double)(indoc.getTotalWords(id)));
+						match_cnts[id] ++;
+					}
+					doc = doc->next;
+				}
+			}
+
+
+			DocList* title_list = indoc.getTitleDocList(***p_iter);
+			if (title_list != nullptr) {
+				auto title_doc = title_list->getHead();
+				while (title_doc != nullptr) {
+					int id = title_doc->id;
+					int doc_wcnt = title_doc->cnt;
+
+					if (indoc.getTotalWords(id) != 0) {
+						weights[id] += (doc_wcnt * wcnt);
+						match_cnts[id] ++;
+					}
+					title_doc = title_doc->next;
+				}
+			}
+
+			(*p_iter)++;
+		}
+
+		delete a;
+		delete b;
+
+		for (int i = 0; i < id_cnt; i++) {
+			if (weights[i] > 0)
+				list.Add(i, match_cnts[i] * 10 + weights[i]);
+		}
+
+		list.qSort();
+		delete[] weights;
+		delete[] match_cnts;
+	}
+
 	~Promoter();
 };
+
+
 
