@@ -217,13 +217,18 @@ void retrieve() {
 
 	std::wstring str;
 	while (getline(in, str)) {
-		CharString s(str);
-		CharStringLink link;
-		devider.devide(&s, &searcher, &link);
 
-		if(!link.isEmpty())
-		invertDoc.printQuery(link, 780, os);
-		os << std::endl;
+		CharString s(str);
+		DocList list;
+		Promoter promoter(s, devider, searcher);
+		CharStringLink link;
+
+		promoter.SearchWordsOr(invertDoc, 781, list);
+
+
+		if(!list.isEmpty())
+			list.print(os);
+		os << endl;
 
 		wait_cnt++;
 		if (wait_cnt == 200) {

@@ -102,10 +102,10 @@ public:
 		delete[] weights;
 	}
 	
-	void Search_words(InvertDoc &indoc, int id_cnt, int n, ) {
-		double *weights = new double[id_cnt];
+	void SearchWordsOr(InvertDoc &indoc, int id_cnt, DocList&list) {
+		int* times = new int[id_cnt];
 		for (int i = 0; i < id_cnt; i++)
-			weights[i] = -1;
+			times[i] = 0;
 
 		Iterator * a = buflink.begin();
 		Iterator * b = buflink.end();
@@ -115,31 +115,14 @@ public:
 		while (!(*p_iter == *b)) {
 			DocList* list = indoc.getDocList(***p_iter);
 
-			int wcnt = cnt[***p_iter];
-
 			if (list != nullptr) {
 				auto doc = list->getHead();
 				while (doc != nullptr) {
 					int id = doc->id;
 					int doc_wcnt = doc->cnt;
 
-					if (indoc.getTotalWords(id) != 0)
-						weights[id] += (doc_wcnt * wcnt * 20 / (indoc.getTotalWords(id)));
+					times[id] += doc_wcnt;
 					doc = doc->next;
-				}
-			}
-
-
-			DocList* title_list = indoc.getTitleDocList(***p_iter);
-			if (title_list != nullptr) {
-				auto title_doc = title_list->getHead();
-				while (title_doc != nullptr) {
-					int id = title_doc->id;
-					int doc_wcnt = title_doc->cnt;
-
-					if (indoc.getTotalWords(id) != 0)
-						weights[id] += (doc_wcnt * wcnt);
-					title_doc = title_doc->next;
 				}
 			}
 
@@ -149,24 +132,13 @@ public:
 		delete a;
 		delete b;
 
-		for (int i = 0; i < n; i++) {
-			int n_id = -1;
-			double now_weight = -1;
-			for (int j = 0; j < id_cnt; j++) {
-				bool has_shown = 0;
-				for (int k = 0; k < i; k++) {
-					if (j == similar[k])
-						has_shown = 1;
-				}
-				if (weights[j] > now_weight && !has_shown) {
-					n_id = j;
-					now_weight = weights[j];
-				}
-			}
-			similar[i] = n_id;
+		for (int i = 0; i < id_cnt; i++) {
+			if (times[i] != 0)
+				list.Add(i, times[i]);
 		}
 
-		delete[] weights;
+		list.qSort();
+		delete[] times;
 	}
 	~Promoter();
 };

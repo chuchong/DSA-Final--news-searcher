@@ -37,6 +37,9 @@ public:
 	void Edit(int id, int to_cnt);
 	void Remove(int id);
 
+	bool isEmpty() {
+		return head == nullptr;
+	}
 	void qSort();
 
 	void PushBack(int id, int cnt);
