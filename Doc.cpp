@@ -26,6 +26,8 @@ void Doc::parse(Devider &devider, Searcher &searcher)
 		}
 		else
 			cnt.operator[](s)++;
+
+		total_words++;
 	}
 	//上面是正文
 	//下面是标题
@@ -47,7 +49,16 @@ void Doc::parse(Devider &devider, Searcher &searcher)
 	Iterator* end = link.end();
 	while (!(*iter == *end)) {
 		CharString *str = *(*iter);
-		this->cnt[*str]++;
+
+
+		if (!this->title_cnt.find(*str)) {
+			title_cnt.operator[](*str) = 1;
+			title_list.add(str);
+			continue;
+		}
+		else
+			title_cnt.operator[](*str)++;
+
 		++(*iter);
 	}
 
@@ -57,6 +68,11 @@ void Doc::parse(Devider &devider, Searcher &searcher)
 
 Doc::Doc(int i):id(i)
 {
+}
+
+Doc::Doc(CharString & str)
+{
+	this->title = str;
 }
 
 

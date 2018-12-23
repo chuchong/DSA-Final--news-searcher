@@ -23,6 +23,7 @@
 #include "Doc.h"
 #include "DocList.h"
 #include "InvertDoc.h"
+#include "Promoter.h"
 
 #ifdef _DEBUG
 #define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
@@ -221,6 +222,40 @@ void retrieve() {
 		invertDoc.printQuery(link, 780, os);
 		os << std::endl;
 	}
+
+	//推荐
+
+	std::wifstream in2;
+	in2.imbue(loc);
+	std::string url2 = "query2.txt";
+	in2.open(url2);
+
+	std::wofstream os2;
+	os2.imbue(loc);
+	std::string orl2 = "result2.txt";
+	os2.open(orl2);
+
+	while (getline(in2, str)) {
+		CharString s(str);
+		CharStringLink link;
+		Promoter promoter(s, devider, searcher);
+		int similar[5];
+		promoter.Similar_n(invertDoc, 781, 5, similar);
+		bool flag = 1;
+
+		for (int i = 0; i < 5; i++) {
+			if (similar[i] >= 0) {
+				if (!flag)
+					os2 << ",";
+				os2 << "(" << similar[i] << "," << invertDoc.getTitle(similar[i]) << ")";
+				flag = 0;
+			}
+		}
+
+		if (flag == 1)
+			os2 << L"系统未匹配到和该新闻相似新闻，抱歉!";
+		os2 << std::endl;
+	}
 }
 
 void createDataset() {
@@ -276,6 +311,6 @@ int main() {
 	retrieve();
 	//testDoc();
 	//createDataset();
-	//_CrtDumpMemoryLeaks();
+	_CrtDumpMemoryLeaks();
 	return 0;
 }
