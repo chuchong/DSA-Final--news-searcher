@@ -194,6 +194,9 @@ void testDoc() {
 }
 
 void retrieve() {
+	cout << "please wait" << endl;
+	int wait_cnt = 0;
+
 	Devider devider;
 	Searcher searcher;
 	searcher.initDictionary("./词库.dic");
@@ -221,8 +224,15 @@ void retrieve() {
 		if(!link.isEmpty())
 		invertDoc.printQuery(link, 780, os);
 		os << std::endl;
+
+		wait_cnt++;
+		if (wait_cnt == 200) {
+			cout << ".";
+			wait_cnt = 0;
+		}
 	}
 
+	cout << "\n已经进行完了query1" << endl << "please wait";
 	//推荐
 
 	std::wifstream in2;
@@ -236,6 +246,11 @@ void retrieve() {
 	os2.open(orl2);
 
 	while (getline(in2, str)) {
+		wait_cnt++;
+		if (wait_cnt == 200) {
+			wait_cnt = 0;
+			cout << ".";
+		}
 		CharString s(str);
 		CharStringLink link;
 		Promoter promoter(s, devider, searcher);
@@ -251,11 +266,11 @@ void retrieve() {
 				flag = 0;
 			}
 		}
-
 		if (flag == 1)
 			os2 << L"系统未匹配到和该新闻相似新闻，抱歉!";
 		os2 << std::endl;
 	}
+	cout << "\n已经进行完了query2" << endl;
 }
 
 void createDataset() {
