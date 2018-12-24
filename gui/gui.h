@@ -61,8 +61,11 @@ public slots:
 	void nextSearch();
 	void prevSearch();
 
+	void clickSheet(QListWidgetItem *);
 
 	void openNewsBox(int id);
+	void showKeyWords(int id);
+
 	void searchResult(QListWidgetItem *);
 	void promoteResult(QListWidgetItem *);
 	//void nextPromote();

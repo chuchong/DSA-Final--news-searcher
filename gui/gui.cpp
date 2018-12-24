@@ -13,6 +13,7 @@
 #include <qstackedwidget.h>
 #include <qlayout.h>
 #include "HtmlDelegate.h"
+#include <qfile.h>
 #define PAGESIZE 10
 #define PROMOTESIZE 10
 
@@ -48,7 +49,11 @@ gui::gui(QWidget *parent)
 	connect(this->ui.searchNext, &QPushButton::clicked, this, &gui::nextSearch);
 	connect(this->ui.ResultList, &QListWidget::itemDoubleClicked, this, &gui::searchResult);
 	connect(this->ui.promoteList, &QListWidget::itemDoubleClicked, this, &gui::promoteResult);
+	connect(this->ui.ResultList, &QListWidget::itemClicked, this, &gui::clickSheet);
 	ui.ResultList->setItemDelegate(new HtmlDelegate);
+	ui.keywordsList->setItemDelegate(new HtmlDelegate);
+	ui.keywordsList->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+	ui.keywordsList->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
 }
 
 void gui::showSearchResult(int begin, int end)
@@ -139,6 +144,20 @@ void gui::prevSearch()
 	showSearchResult(seachPage);
 }
 
+void gui::clickSheet(QListWidgetItem *)
+{
+	int row = ui.ResultList->currentRow();
+	int cnt = 0;
+	auto iter = bufSearchList->getHead();
+	while (iter != nullptr && cnt < bufSearchSize && cnt < row + seachPage * PAGESIZE) {
+		iter = iter->next;
+		cnt++;
+	}
+
+	int id = iter->id;
+	showKeyWords(id);
+}
+
 void gui::openNewsBox(int id)
 {
 	QString title = WString2Qstring(invertDoc->getTitle(id).to_wstring());
@@ -172,6 +191,57 @@ void gui::openNewsBox(int id)
 	//connect(box, &NewsDialog::sendP, this, &gui::deleteDialog);
 	box->show();
 	//box->exec();
+}
+
+void gui::showKeyWords(int id)
+{
+	ui.keywordsList->clear();
+
+	int size = keywords.size();
+	QVector<bool> isFind;
+	isFind.resize(size);
+	for (bool & i : isFind)
+		i = 0;
+
+	std::string url = "output/" + std::to_string(id) + ".info";
+	QString qurl = QString::fromStdString(url);
+	QFile file(qurl);
+
+	if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+		return;
+	QTextCodec *gbk = QTextCodec::codecForName("GBK");
+
+	QByteArray line = file.readLine();
+	//QString title = gbk->toUnicode(line);
+	//ui.title->setText(title);
+
+	line = file.readLine();
+	line = file.readLine();
+
+	QString contents;
+	while (!file.atEnd()) {
+		QByteArray line = file.readLine();
+		contents = (gbk->toUnicode(line));
+		//splitString
+		bool shown_new = 0;
+		for (int i = 0; i < size; i++) {
+			if (!isFind[i] && contents.contains(keywords[i])) {
+				shown_new = 1;
+				isFind[i] = 1;
+			}
+		}
+		if (shown_new) {
+			for (int i = 0; i < size; i++) {
+				QString to = "<font color=red>" + keywords[i] + "</font>";
+				contents.replace(keywords[i], to);
+				contents.append("...");
+				contents.insert(0, "...");
+			}
+			ui.keywordsList->addItem(contents);
+		}
+	}
+
+
 }
 
 void gui::searchResult(QListWidgetItem *)
