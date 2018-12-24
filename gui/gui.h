@@ -24,7 +24,7 @@ class gui : public QMainWindow
 	DocWeightList *bufSearchList = nullptr;
 	int bufSearchSize = 0;
 	int seachPage = 0;
-	QMap<QLabel*, int> label2id;
+	QVector<QString> keywords;
 
 	DocWeightList *bufPromoteList = nullptr;
 	int bufPromoteSize = 0;

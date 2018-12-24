@@ -13,6 +13,9 @@ class Promoter
 	CharStringLink buflink;
 	AVLMap<CharString, int>cnt;
 public:
+	CharStringLink &getWords() {
+		return buflink;
+	}
 	Promoter(CharString & str, Devider &devider, Searcher &searcher);
 	void Devide(Devider &devider, Searcher &searcher) {
 		CharStringLink list;

@@ -12,6 +12,7 @@
 #include <qcursor.h>
 #include <qstackedwidget.h>
 #include <qlayout.h>
+#include "HtmlDelegate.h"
 #define PAGESIZE 10
 #define PROMOTESIZE 10
 
@@ -47,7 +48,7 @@ gui::gui(QWidget *parent)
 	connect(this->ui.searchNext, &QPushButton::clicked, this, &gui::nextSearch);
 	connect(this->ui.ResultList, &QListWidget::itemDoubleClicked, this, &gui::searchResult);
 	connect(this->ui.promoteList, &QListWidget::itemDoubleClicked, this, &gui::promoteResult);
-
+	ui.ResultList->setItemDelegate(new HtmlDelegate);
 }
 
 void gui::showSearchResult(int begin, int end)
@@ -65,40 +66,17 @@ void gui::showSearchResult(int begin, int end)
 		CharString s = invertDoc->getTitle(id);
 
 		QString qstr = WString2Qstring(s.to_wstring());
+		for (QString words : keywords) {
+			QString to_words = "<font color=red>" + words + "</font>";
+			qstr.replace(words, to_words);
+		}
+
 		ui.ResultList->addItem(qstr);
 
 		iter = iter->next;
 		cnt++;
 	}
 
-	QHBoxLayout  la;
-	//ui.ResultList->setItemDelegate(new HtmlDelegate());
-	//QString searchString("和");
-	//CharString s = invertDoc->getTitle(1);
-	//QString qstr = WString2Qstring(s.to_wstring());
-	//QTextDocument*document = new QTextDocument();
-	//document->setPlainText(qstr);
-
-	//QTextCursor highlightCursor(document);
-	//QTextCursor cursor(document);
-	////***************开始***************
-	//cursor.beginEditBlock();
-	//QTextCharFormat plainFormat(highlightCursor.charFormat());
-	//QTextCharFormat colorFormat = plainFormat;
-	//colorFormat.setForeground(Qt::red);
-	//while (!highlightCursor.isNull() && !highlightCursor.atEnd()) {
-	//	highlightCursor = document->find(searchString, highlightCursor,
-	//		QTextDocument::FindWholeWords);
-	//	if (!highlightCursor.isNull()) {
-	//		highlightCursor.movePosition(QTextCursor::WordRight,
-	//			QTextCursor::KeepAnchor);
-	//		highlightCursor.mergeCharFormat(colorFormat);
-	//	}
-	//}
-	//cursor.endEditBlock();
-	////***************结束***************
-
-	//ui.ResultList->setItemDelegate();
 }
 
 inline void gui::showSearchResult(int page) {
@@ -273,12 +251,27 @@ void gui::search()
 
 	promoter.SearchNews(*invertDoc, 781, *renewSearchList());
 	bufSearchSize = 0;
+	keywords.clear();
 	seachPage = 0;
 	auto iter = bufSearchList->getHead();
 	while (iter != nullptr) {
 		bufSearchSize++;
 		iter = iter->next;
 	}
+
+	Iterator * p_begin = promoter.getWords().begin();
+	Iterator* p_end = promoter.getWords().end();
+	Iterator* p_i = p_begin;
+	while (!(*p_i == *p_end)) {
+		CharString str = ***p_i;
+		this->keywords.append(WString2Qstring(str.to_wstring()));
+		(*p_i)++;
+	}
+
+
+	delete p_begin;
+	delete p_end;
+
 
 	std::wstring num_r = L"搜索结果共" + std::to_wstring(bufSearchSize) + L"条";
 	ui.searchNum->setText(WString2Qstring(num_r));
