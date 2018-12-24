@@ -35,6 +35,7 @@ QString gui::WString2Qstring(std::wstring wstr)
 gui::gui(QWidget *parent)
 	: QMainWindow(parent)
 {
+	setWindowIcon(QIcon(QStringLiteral(":/gui/SEARCHER")));
 	ui.setupUi(this);
 	searcher = new Searcher();
 	searcher->initDictionary("./´Ê¿â.dic");
@@ -51,9 +52,9 @@ gui::gui(QWidget *parent)
 	connect(this->ui.promoteList, &QListWidget::itemDoubleClicked, this, &gui::promoteResult);
 	connect(this->ui.ResultList, &QListWidget::itemClicked, this, &gui::clickSheet);
 	ui.ResultList->setItemDelegate(new HtmlDelegate);
-	ui.keywordsList->setItemDelegate(new HtmlDelegate);
-	ui.keywordsList->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-	ui.keywordsList->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
+	//ui.keywordsList->setItemDelegate(new HtmlDelegate);
+
+	//ui.keywordsList->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
 }
 
 void gui::showSearchResult(int begin, int end)
@@ -217,7 +218,7 @@ void gui::showKeyWords(int id)
 
 	line = file.readLine();
 	line = file.readLine();
-
+	QString htmlcon;
 	QString contents;
 	while (!file.atEnd()) {
 		QByteArray line = file.readLine();
@@ -234,14 +235,14 @@ void gui::showKeyWords(int id)
 			for (int i = 0; i < size; i++) {
 				QString to = "<font color=red>" + keywords[i] + "</font>";
 				contents.replace(keywords[i], to);
-				contents.append("...");
-				contents.insert(0, "...");
 			}
-			ui.keywordsList->addItem(contents);
+			contents.append("...<br/>");
+			contents.insert(0, "...");
+			htmlcon.append(contents);
 		}
 	}
 
-
+	ui.keywordsList->setHtml(htmlcon);
 }
 
 void gui::searchResult(QListWidgetItem *)

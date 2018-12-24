@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>NewsDialog</string>
+   <string>看新闻</string>
   </property>
   <widget class="QListWidget" name="promote">
    <property name="geometry">
