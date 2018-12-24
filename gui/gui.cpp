@@ -8,6 +8,10 @@
 #include <qtextcodec.h>
 #include <qbytearray.h>
 #include<codecvt>
+#include<qtextdocument.h>
+#include <qcursor.h>
+#include <qstackedwidget.h>
+#include <qlayout.h>
 #define PAGESIZE 10
 #define PROMOTESIZE 10
 
@@ -66,6 +70,35 @@ void gui::showSearchResult(int begin, int end)
 		iter = iter->next;
 		cnt++;
 	}
+
+	QHBoxLayout  la;
+	//ui.ResultList->setItemDelegate(new HtmlDelegate());
+	//QString searchString("和");
+	//CharString s = invertDoc->getTitle(1);
+	//QString qstr = WString2Qstring(s.to_wstring());
+	//QTextDocument*document = new QTextDocument();
+	//document->setPlainText(qstr);
+
+	//QTextCursor highlightCursor(document);
+	//QTextCursor cursor(document);
+	////***************开始***************
+	//cursor.beginEditBlock();
+	//QTextCharFormat plainFormat(highlightCursor.charFormat());
+	//QTextCharFormat colorFormat = plainFormat;
+	//colorFormat.setForeground(Qt::red);
+	//while (!highlightCursor.isNull() && !highlightCursor.atEnd()) {
+	//	highlightCursor = document->find(searchString, highlightCursor,
+	//		QTextDocument::FindWholeWords);
+	//	if (!highlightCursor.isNull()) {
+	//		highlightCursor.movePosition(QTextCursor::WordRight,
+	//			QTextCursor::KeepAnchor);
+	//		highlightCursor.mergeCharFormat(colorFormat);
+	//	}
+	//}
+	//cursor.endEditBlock();
+	////***************结束***************
+
+	//ui.ResultList->setItemDelegate();
 }
 
 inline void gui::showSearchResult(int page) {

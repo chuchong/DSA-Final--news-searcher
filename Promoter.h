@@ -22,12 +22,12 @@ public:
 		Iterator * b = list.end();
 		auto iter = a;
 		while (!(*iter == *b)) {
-			if (!cnt.find(**iter)) {
+			if (!cnt.find(***iter)) {
 				cnt[***iter] = 1;
 				buflink.add(**iter);
 			}
 			else
-				cnt[**iter]++;
+				cnt[***iter]++;
 			(*iter)++;
 		}
 		delete a;
