@@ -7,4 +7,5 @@ int main(int argc, char *argv[])
 	gui w;
 	w.show();
 	return a.exec();
+	_CrtDumpMemoryLeaks();
 }

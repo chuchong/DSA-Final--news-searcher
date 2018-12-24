@@ -154,9 +154,13 @@ void gui::openNewsBox(int id)
 		promote_iter = promote_iter->next;
 	}
 
+	//NewsDialog dialog(id, titles, ids, this);
+	//NewsDialog*box = &dialog;
 	NewsDialog* box = new NewsDialog(id, titles, ids, this);
 	connect(box, &NewsDialog::openPromote, this, &gui::openNewsBox);
+	//connect(box, &NewsDialog::sendP, this, &gui::deleteDialog);
 	box->show();
+	//box->exec();
 }
 
 void gui::searchResult(QListWidgetItem *)

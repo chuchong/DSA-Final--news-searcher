@@ -28,6 +28,7 @@ QString NewsDialog::WString2Qstring(std::wstring wstr)
 NewsDialog::NewsDialog(int id, QVector<QString> ttl, QVector<int> d, QWidget *parent)
 	: QDialog(parent),titles(ttl), ids(d)
 {
+	setAttribute(Qt::WA_DeleteOnClose);
 	ui.setupUi(this);
 	std::string url = "output/" + std::to_string(id) + ".info";
 	QString qurl = QString::fromStdString(url);

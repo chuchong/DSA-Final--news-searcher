@@ -18,12 +18,15 @@ class NewsDialog : public QDialog
 	QVector<int> ids;
 signals:
 	void openPromote(int);
+	//void sendP(NewsDialog *);
 public:
 	NewsDialog(int id, QVector<QString> ,QVector<int>, QWidget *parent = Q_NULLPTR);
 	~NewsDialog();
 public slots:
 	void onPromote(QListWidgetItem *);
-
+	//void closeMe() {
+	//	emit sendP(this);
+	//}
 private:
 	Ui::NewsDialog ui;
 };

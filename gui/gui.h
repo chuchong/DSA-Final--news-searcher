@@ -66,6 +66,9 @@ public slots:
 	void promoteResult(QListWidgetItem *);
 	//void nextPromote();
 	//void prevPromote();
+	//void deleteDialog(NewsDialog * d) {
+	//	delete d;
+	//}
 
 private:
 	Ui::guiClass ui;

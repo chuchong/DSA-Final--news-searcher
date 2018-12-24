@@ -77,7 +77,7 @@ public:
 		return *this; 
 	}
 
-	void clear() {
+	virtual void clear() {
 		DocNode * p = head;
 		while (p != nullptr) {
 			DocNode * q = p;
