@@ -1,0 +1,9 @@
+gui/output/
+output/
+gui/GeneratedFiles/
+gui/.vs/gui/v15/Browse.VC.db
+gui/.vs/gui/v15/ipch/AutoPCH/9d25985b4ec8904f/GUI.ipch
+gui/.vs/gui/v15/ipch/AutoPCH/f0b83b38a1f7c793/DOC.ipch
+.vs/src/v15/Browse.VC.db
+src.vcxproj.filters
+src.vcxproj

@@ -44,6 +44,7 @@ gui::gui(QWidget *parent)
 	invertDoc->createList(*devider, *searcher);
 	bufSearchList = new DocWeightList();
 	bufPromoteList = new DocWeightList();
+	syn = new Synonyms("synonyms.txt", *devider, *searcher);
 
 	connect(this->ui.searchBtn,&QPushButton::clicked, this, &gui::search);
 	connect(this->ui.searchPrev, &QPushButton::clicked, this, &gui::prevSearch);
@@ -53,7 +54,7 @@ gui::gui(QWidget *parent)
 	connect(this->ui.ResultList, &QListWidget::itemClicked, this, &gui::clickSheet);
 	ui.ResultList->setItemDelegate(new HtmlDelegate);
 	//ui.keywordsList->setItemDelegate(new HtmlDelegate);
-
+	ui.keywordsList->setHtml(u8"<p><font color = red>使用方法:</font></p> <p>在搜索框中输入文字，单机'搜一搜'按钮，可以进行查询和推荐</p> <p><font color=red>单击</font>搜索结果框中的一行，会在本文本框中显示其预览信息</p> <p><font color=red>双击</font>结果框或者推荐框中的一栏，可以查看新闻具体信息</p><p>新闻页中，也可以通过双击推荐框查看推荐内容</p> <p>author:黎思宇 感谢使用！</p>");
 	//ui.keywordsList->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
 }
 
@@ -73,8 +74,8 @@ void gui::showSearchResult(int begin, int end)
 
 		QString qstr = WString2Qstring(s.to_wstring());
 		for (QString words : keywords) {
-			QString to_words = "<font color=red>" + words + "</font>";
-			qstr.replace(words, to_words);
+			CharString wstr = QString2WString(words);
+			this->convertWandSyns(wstr, qstr);
 		}
 
 		ui.ResultList->addItem(qstr);
@@ -115,7 +116,7 @@ void gui::showPromoteResult(int begin, int end)
 
 		if (flag == 1) {
 			CharString s = invertDoc->getTitle(id);
-
+			promoteIds.append(id);
 			QString qstr = WString2Qstring(s.to_wstring());
 			ui.promoteList->addItem(qstr);
 			cnt++;
@@ -165,14 +166,13 @@ void gui::openNewsBox(int id)
 	CharString str(QString2WString(title));
 	Promoter promoter(str, *devider, *searcher);
 	DocWeightList wlist;
-	promoter.PromoteNews(*invertDoc, 781, wlist);
+	promoter.PromoteNews(*invertDoc, 781, wlist, *syn);
 	DocNode * promote_iter = wlist.getHead();
 	
 	int cnt = 0;
 	QVector<int>ids;
 	QVector<QString> titles;
 	while (promote_iter != nullptr &&cnt < 10) {
-		
 		if (promote_iter->id != id) {
 			ids.push_back(promote_iter->id);
 			CharString tit = invertDoc->getTitle(promote_iter->id);
@@ -226,15 +226,16 @@ void gui::showKeyWords(int id)
 		//splitString
 		bool shown_new = 0;
 		for (int i = 0; i < size; i++) {
-			if (!isFind[i] && contents.contains(keywords[i])) {
+			CharString wstr = QString2WString(keywords[i]);
+			if (!isFind[i] && this->containWandSyn(wstr ,contents)) {
 				shown_new = 1;
 				isFind[i] = 1;
 			}
 		}
 		if (shown_new) {
 			for (int i = 0; i < size; i++) {
-				QString to = "<font color=red>" + keywords[i] + "</font>";
-				contents.replace(keywords[i], to);
+				CharString wstr = QString2WString(keywords[i]);
+				this->convertWandSyns(wstr, contents);
 			}
 			contents.append("...<br/>");
 			contents.insert(0, "...");
@@ -263,32 +264,7 @@ void gui::searchResult(QListWidgetItem *)
 
 void gui::promoteResult(QListWidgetItem *){
 	int row = ui.promoteList->currentRow();
-
-
-	auto iter = bufPromoteList->getHead();
-	int id = iter->id;
-	bool flag = 1;
-	int cnt = 0;
-	while (iter != nullptr && cnt < bufPromoteSize && cnt < row) {
-		int id = iter->id;
-		bool flag = 1;
-		auto searchIter = bufSearchList->getHead();
-		int searchCnt = 0;
-		while (searchIter != nullptr && searchCnt < PAGESIZE) {
-			if (searchIter->id == id)
-				flag = 0;
-
-			searchCnt++;
-			searchIter = searchIter->next;
-		}
-
-		if (flag == 1) {
-			cnt++;
-		}
-		iter = iter->next;
-	}
-	id = iter->id;
-	openNewsBox(id);
+	openNewsBox(promoteIds[row]);
 }
 
 //void gui::nextPromote()
@@ -320,7 +296,7 @@ void gui::search()
 	CharStringLink link;
 
 
-	promoter.SearchNews(*invertDoc, 781, *renewSearchList());
+	promoter.SearchNews(*invertDoc, 781, *renewSearchList(), *syn);
 	bufSearchSize = 0;
 	keywords.clear();
 	seachPage = 0;
@@ -350,9 +326,10 @@ void gui::search()
 	showSearchResult(seachPage);
 	//推荐
 
+	promoteIds.clear();
 	bufPromoteSize = 0;
 	//promotePage = 0;
-	promoter.PromoteNews(*invertDoc, 781, *renewPromoteList());
+	promoter.PromoteNews(*invertDoc, 781, *renewPromoteList(),*syn);
 	auto promote_iter = bufPromoteList->getHead();
 	while (promote_iter != nullptr) {
 		bufPromoteSize++;

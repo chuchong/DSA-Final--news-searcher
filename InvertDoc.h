@@ -7,6 +7,7 @@
 #include <iostream>
 #include <fstream>
 #include <ostream>
+#include "HashTable.h"
 class InvertDoc
 {
 	CharString titles[781];
@@ -14,6 +15,9 @@ class InvertDoc
 	AVLMap<CharString, DocList> content_map;
 
 	AVLMap<CharString, DocList> title_map;
+	//HashString2Map<DocList>  content_map;
+	//HashString2Map<DocList>  title_map;
+
 public:
 	//int Find(CharString & s) {
 	//	return map[s].Search();

@@ -1,5 +1,6 @@
 #include "gui.h"
 #include <QtWidgets/QApplication>
+#include"../HashTable.h"
 
 int main(int argc, char *argv[])
 {

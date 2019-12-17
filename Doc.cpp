@@ -54,6 +54,7 @@ void Doc::parse(Devider &devider, Searcher &searcher)
 		if (!this->title_cnt.find(*str)) {
 			title_cnt.operator[](*str) = 1;
 			title_list.add(str);
+			++(*iter);
 			continue;
 		}
 		else

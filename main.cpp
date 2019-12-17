@@ -24,6 +24,10 @@
 #include "DocList.h"
 #include "InvertDoc.h"
 #include "Promoter.h"
+#include "windows.h"
+#include "Synonyms.h"
+DWORD time0, time1, time2;
+
 
 #ifdef _DEBUG
 #define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
@@ -197,12 +201,16 @@ void retrieve() {
 	cout << "please wait" << endl;
 	int wait_cnt = 0;
 
+
 	Devider devider;
 	Searcher searcher;
 	searcher.initDictionary("./词库.dic");
 	InvertDoc invertDoc;
 	invertDoc.createList(devider, searcher);
+	Synonyms syn("synonyms.txt", devider, searcher);
 
+
+	time1 = GetTickCount();
 	std::locale loc("chs");//windows下ok
 
 	std::wifstream in;
@@ -224,7 +232,6 @@ void retrieve() {
 		CharStringLink link;
 
 		promoter.SearchWordsOr(invertDoc, 781, list);
-
 
 		if(!list.isEmpty())
 			list.print(os);
@@ -328,9 +335,12 @@ int main() {
 	//testDict();
 
 	//
+	time0 = GetTickCount();
 	retrieve();
+	time2 = GetTickCount();
 	//testDoc();
 	//createDataset();
 	//_CrtDumpMemoryLeaks();
+	cout << "hashmap加载:" << time1 - time0 << "ms 处理数据:" << time2 - time1 <<"ms"<< endl;
 	return 0;
 }

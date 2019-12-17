@@ -5,10 +5,10 @@ template<class T>
 class Stack;
 
 template<class T>
-class Stack_Element {
-private:
+struct Stack_Element {
+public:
 	T t_;
-	Stack_Element * next_;
+	Stack_Element * next_ = nullptr;
 	Stack_Element(const T & t):t_(t),next_(0){
 	}
 	friend class Stack<T>;
@@ -19,6 +19,7 @@ private:
 template<class T>
 class Stack
 {
+public:
 	Stack_Element<T> * head;
 public:
 	void push(const T & t);

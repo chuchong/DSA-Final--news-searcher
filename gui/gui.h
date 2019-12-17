@@ -12,6 +12,7 @@
 #include <qbytearray.h>
 #include<codecvt>
 #include "NewsDialog.h"
+#include "../Synonyms.h"
 
 class gui : public QMainWindow
 {
@@ -20,17 +21,53 @@ class gui : public QMainWindow
 	Searcher * searcher;
 	Devider * devider;
 	InvertDoc * invertDoc;
+	Synonyms * syn;
 	//search xiangguan
 	DocWeightList *bufSearchList = nullptr;
 	int bufSearchSize = 0;
 	int seachPage = 0;
 	QVector<QString> keywords;
 
+	QVector<int> promoteIds;
 	DocWeightList *bufPromoteList = nullptr;
 	int bufPromoteSize = 0;
 	const int promotePage = 0;
 
 private:
+	bool containWandSyn(CharString & str,const QString & contents) {
+		if (contents.contains(WString2Qstring(str.to_wstring())))
+			return true;
+		std::vector<CharString>* syns = syn->search(str);
+		if (!syns)
+			return false;
+		for (CharString & words : *syns) {
+			if (contents.contains(WString2Qstring(words.to_wstring())))
+				return true;
+		}
+		return false;
+	}
+
+	void convertWandSyns(CharString & str, QString & contents) {
+		if (contents.contains(WString2Qstring(str.to_wstring()))) {
+			QString qstr = WString2Qstring(str.to_wstring());
+			contents.replace(qstr, "<font color=red>" + qstr + "</font>");
+			return;
+		}
+		else {
+			std::vector<CharString>* syns = syn->search(str);
+			if (!syns)
+				return;
+			for (CharString & words : *syns) {
+				if (contents.contains(WString2Qstring(words.to_wstring()))) {
+					QString qstr = WString2Qstring(words.to_wstring());
+					contents.replace(qstr, "<font color=red>" + qstr + "</font>");
+					return;
+				}
+			}
+			return;
+		}
+	}
+
 	DocWeightList * renewSearchList() {
 		if (bufSearchList != nullptr)
 			delete bufSearchList;

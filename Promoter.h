@@ -6,12 +6,15 @@
 #include "Searcher.h"
 #include "InvertDoc.h"
 #include "DocList.h"
-
+#include "HashTable.h"
+#include "Synonyms.h"
 class Promoter
 {
 	CharString content;
 	CharStringLink buflink;
-	AVLMap<CharString, int>cnt;
+	//AVLMap<CharString, int>cnt;
+	HashString2Map<int> cnt;
+	//private SynAddWeight(InvertDoc& inver, int mode);
 public:
 	CharStringLink &getWords() {
 		return buflink;
@@ -204,6 +207,222 @@ public:
 		for (int i = 0; i < id_cnt; i++) {
 			if (weights[i] > 0)
 				list.Add(i, 0, weights[i] * match_cnts[i]);
+		}
+
+		list.qSort();
+		delete[] weights;
+		delete[] match_cnts;
+	}
+
+	//promoter 更看重weight而不是cnt
+	void PromoteNews(InvertDoc &indoc, int id_cnt, DocWeightList&list, Synonyms & syn) {
+		double* weights = new double[id_cnt];
+		int* match_cnts = new int[id_cnt];
+		for (int i = 0; i < id_cnt; i++) {
+			weights[i] = 0;
+			match_cnts[i] = 0;
+		}
+
+		Iterator * a = buflink.begin();
+		Iterator * b = buflink.end();
+		auto p_iter = a;
+
+
+		while (!(*p_iter == *b)) {
+			std::vector<CharString>* vec =  syn.search(***p_iter);
+			if (vec != nullptr) {
+				for (CharString & word : *vec) {
+					DocList* list = indoc.getDocList(word);
+
+					int wcnt = cnt[***p_iter];
+
+					if (list != nullptr) {
+						auto doc = list->getHead();
+						while (doc != nullptr) {
+							int id = doc->id;
+							int doc_wcnt = doc->cnt;
+
+							if (indoc.getTotalWords(id) != 0) {
+								double ttl = indoc.getTotalWords(id) > 100 ? indoc.getTotalWords(id) : 100;
+								weights[id] += (doc_wcnt * wcnt * 100 / ttl);
+								match_cnts[id] ++;
+							}
+							doc = doc->next;
+						}
+					}
+
+
+					DocList* title_list = indoc.getTitleDocList(***p_iter);
+					if (title_list != nullptr) {
+						auto title_doc = title_list->getHead();
+						while (title_doc != nullptr) {
+							int id = title_doc->id;
+							int doc_wcnt = title_doc->cnt;
+
+							if (indoc.getTotalWords(id) != 0) {
+								weights[id] += (doc_wcnt * wcnt * 2);//标题的更重要些
+								if (match_cnts[id] == 0)
+									match_cnts[id] ++;
+							}
+							title_doc = title_doc->next;
+						}
+					}
+				}
+			}
+
+
+			DocList* list = indoc.getDocList(***p_iter);
+
+			int wcnt = cnt[***p_iter];
+
+			if (list != nullptr) {
+				auto doc = list->getHead();
+				while (doc != nullptr) {
+					int id = doc->id;
+					int doc_wcnt = doc->cnt;
+
+					if (indoc.getTotalWords(id) != 0) {
+						double ttl = indoc.getTotalWords(id) > 100 ? indoc.getTotalWords(id) : 100;
+						weights[id] += (doc_wcnt * wcnt * 100 / ttl);
+						match_cnts[id] ++;
+					}
+					doc = doc->next;
+				}
+			}
+
+
+			DocList* title_list = indoc.getTitleDocList(***p_iter);
+			if (title_list != nullptr) {
+				auto title_doc = title_list->getHead();
+				while (title_doc != nullptr) {
+					int id = title_doc->id;
+					int doc_wcnt = title_doc->cnt;
+
+					if (indoc.getTotalWords(id) != 0) {
+						weights[id] += (doc_wcnt * wcnt * 2);//标题的更重要些
+						if (match_cnts[id] == 0)
+							match_cnts[id] ++;
+					}
+					title_doc = title_doc->next;
+				}
+			}
+
+			(*p_iter)++;
+		}
+
+		delete a;
+		delete b;
+
+		for (int i = 0; i < id_cnt; i++) {
+			if (weights[i] > 0)
+				list.Add(i, 0, weights[i] * match_cnts[i]);
+		}
+
+		list.qSort();
+		delete[] weights;
+		delete[] match_cnts;
+	}
+
+	void SearchNews(InvertDoc &indoc, int id_cnt, DocWeightList&list, Synonyms & syn) {
+		double* weights = new double[id_cnt];
+		int* match_cnts = new int[id_cnt];
+		for (int i = 0; i < id_cnt; i++) {
+			weights[i] = 0;
+			match_cnts[i] = 0;
+		}
+
+		Iterator * a = buflink.begin();
+		Iterator * b = buflink.end();
+		auto p_iter = a;
+
+
+		while (!(*p_iter == *b)) {
+			std::vector<CharString>* vec = syn.search(***p_iter);
+			if (vec != nullptr) {
+				for (CharString & word : *vec) {
+					DocList* list = indoc.getDocList(word);
+
+					int wcnt = cnt[***p_iter];
+
+					if (list != nullptr) {
+						auto doc = list->getHead();
+						while (doc != nullptr) {
+							int id = doc->id;
+							int doc_wcnt = doc->cnt;
+
+							if (indoc.getTotalWords(id) != 0) {
+								double ttl = indoc.getTotalWords(id) > 100 ? indoc.getTotalWords(id) : 100;
+								weights[id] += (doc_wcnt * wcnt * 100 / ttl);
+								match_cnts[id] ++;
+							}
+							doc = doc->next;
+						}
+					}
+
+
+					DocList* title_list = indoc.getTitleDocList(***p_iter);
+					if (title_list != nullptr) {
+						auto title_doc = title_list->getHead();
+						while (title_doc != nullptr) {
+							int id = title_doc->id;
+							int doc_wcnt = title_doc->cnt;
+
+							if (indoc.getTotalWords(id) != 0) {
+								weights[id] += (doc_wcnt * wcnt);//标题的更重要些
+								if (match_cnts[id] == 0)
+									match_cnts[id] ++;
+							}
+							title_doc = title_doc->next;
+						}
+					}
+				}
+			}
+
+			DocList* list = indoc.getDocList(***p_iter);
+
+			int wcnt = cnt[***p_iter];
+
+			if (list != nullptr) {
+				auto doc = list->getHead();
+				while (doc != nullptr) {
+					int id = doc->id;
+					int doc_wcnt = doc->cnt;
+
+					if (indoc.getTotalWords(id) != 0) {
+						double ttl = indoc.getTotalWords(id) > 100 ? indoc.getTotalWords(id) : 100;
+						weights[id] += (doc_wcnt * wcnt*100 / ttl);
+						match_cnts[id] ++;
+					}
+					doc = doc->next;
+				}
+			}
+
+
+			DocList* title_list = indoc.getTitleDocList(***p_iter);
+			if (title_list != nullptr) {
+				auto title_doc = title_list->getHead();
+				while (title_doc != nullptr) {
+					int id = title_doc->id;
+					int doc_wcnt = title_doc->cnt;
+
+					if (indoc.getTotalWords(id) != 0) {
+						weights[id] += (doc_wcnt * wcnt);
+						if (match_cnts[id] == 0)
+							match_cnts[id] ++;
+					}
+					title_doc = title_doc->next;
+				}
+			}
+
+			(*p_iter)++;
+		}
+
+		delete a;
+		delete b;
+
+		for (int i = 0; i < id_cnt; i++) {
+			if (weights[i] > 0)
+				list.Add(i, match_cnts[i], weights[i]);
 		}
 
 		list.qSort();
